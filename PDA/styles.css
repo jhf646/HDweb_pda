@@ -1,0 +1,303 @@
+/* PDA适配样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Microsoft YaHei', sans-serif;
+    font-size: 16px;
+    background-color: #f5f5f5;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.page {
+    display: none;
+    flex: 1;
+    padding: 20px;
+}
+
+.page.active {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 登录页面样式 */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 24px;
+}
+
+/* 主页面样式 */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header h2 {
+    font-size: 20px;
+    color: #333;
+}
+
+/* 导航菜单 */
+.nav-menu {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 0 5px;
+}
+
+.nav-btn {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    background: #f8f9fa;
+    color: #555;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.nav-btn.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.nav-btn:hover:not(.active) {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 子页面样式 */
+.sub-page {
+    display: none;
+    flex: 1;
+}
+
+.sub-page.active {
+    display: block;
+}
+
+/* 表单样式 */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+    font-size: 16px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    background: #fff;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+/* 按钮样式 */
+.btn-primary, .btn-secondary {
+    padding: 15px 25px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    min-height: 50px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #545b62;
+}
+
+/* 表单操作区域 */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.form-actions button {
+    flex: 1;
+}
+
+/* 结果展示区域 */
+.result-area {
+    margin-top: 20px;
+    padding: 15px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    min-height: 100px;
+}
+
+.result-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.result-item {
+    padding: 12px;
+    background: #f8f9fa;
+    border-left: 4px solid #007bff;
+    border-radius: 4px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.result-item-msg {
+    grid-column: 1 / -1;
+}
+
+.result-item-time,
+.result-item-status,
+.result-item-msg,
+.result-item-itemid,
+.result-item-qty {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+.result-item .label {
+    font-weight: 600;
+    color: #333;
+    min-width: 60px;
+}
+
+.result-item .value {
+    color: #666;
+    flex: 1;
+    word-break: break-all;
+}
+
+.result-item .status-success {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.result-item .status-error {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+/* PDA设备特殊适配 */
+@media (max-width: 768px) {
+    .page {
+        padding: 15px;
+    }
+    
+    .login-container {
+        padding: 20px;
+    }
+    
+    .input-group input {
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    .btn-primary, .btn-secondary {
+        padding: 12px 20px;
+        font-size: 14px;
+        min-height: 44px;
+    }
+}
+
+/* 防止双击缩放 */
+* {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+}
+
+input, textarea {
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+/* 高对比度模式，适合工业环境 */
+@media (prefers-contrast: high) {
+    body {
+        background-color: #000;
+        color: #fff;
+    }
+    
+    .input-group input {
+        background: #000;
+        color: #fff;
+        border-color: #fff;
+    }
+    
+    .btn-primary {
+        background-color: #00f;
+        color: #fff;
+    }
+    
+    .btn-secondary {
+        background-color: #666;
+        color: #fff;
+    }
+}

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PDA操作系统</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <div id="login-page" class="page active">
+            <div class="login-container">
+                <h2>PDA操作系统</h2>
+                <form id="login-form">
+                    <div class="input-group">
+                        <label for="username">用户名:</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">密码:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn-primary">登录</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="main-page" class="page">
+            <div class="header">
+                <h2>PDA操作系统</h2>
+                <button id="logout-btn" class="btn-secondary">退出</button>
+            </div>
+            <div class="nav-menu">
+                <button class="nav-btn active" data-page="inbound-page">入库绑定</button>
+                <button class="nav-btn" data-page="outbound-page">分拣出库</button>
+            </div>
+            <div class="content">
+                <!-- 入库绑定页面 -->
+                <div id="inbound-page" class="sub-page active">
+                    <form id="inbound-form">
+                          <div class="input-group">
+                            <label for="inbound-pallet-id">托盘号:</label>
+                            <input type="text" id="inbound-pallet-id" name="palletID" required 
+                                   placeholder="请扫描托盘二维码或手动输入">
+                        </div>
+                        <div class="input-group">
+                            <label for="inbound-inventory-id">库存号:</label>
+                            <input type="text" id="inbound-inventory-id" name="inventoryID" required 
+                                   placeholder="请扫描库存二维码或手动输入">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">提交绑定</button>
+                            <button type="reset" class="btn-secondary">重置</button>
+                        </div>
+                    </form>
+                    <div id="inbound-result-area" class="result-area">
+                        <!-- 用于显示绑定结果 -->
+                    </div>
+                </div>
+
+                <!-- 分拣出库页面 -->
+                <div id="outbound-page" class="sub-page">
+                    <form id="outbound-form">
+                        <div class="input-group">
+                            <label for="outbound-pallet-id">托盘号:</label>
+                            <input type="text" id="outbound-pallet-id" name="palletID" required 
+                                   placeholder="请扫描托盘二维码或手动输入">
+                        </div>
+                        <div class="input-group">
+                            <label for="outbound-item-qty">库存数量:</label>
+                            <input type="number" id="outbound-item-qty" name="itemQty" readonly 
+                                   placeholder="自动填充库存数量" value="">
+                        </div>
+                        <div class="input-group">
+                            <label for="item-qty">出库数量:</label>
+                            <input type="number" id="item-qty" name="itemQtyModify" required 
+                                   placeholder="请输入出库数量" value="" min="1">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">提交出库</button>
+                            <button type="reset" class="btn-secondary">重置</button>
+                        </div>
+                    </form>
+                    <div id="outbound-result-area" class="result-area">
+                       
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
