@@ -2,7 +2,10 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#ffffff">
     <title>PDA操作系统</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -30,65 +33,244 @@
                 <h2>PDA操作系统</h2>
                 <button id="logout-btn" class="btn-secondary">退出</button>
             </div>
-            <div class="nav-menu">
-                <button class="nav-btn active" data-page="inbound-page">入库绑定</button>
-                <button class="nav-btn" data-page="outbound-page">分拣出库</button>
-            </div>
+            
             <div class="content">
+                <!-- 首页：显示三个选项卡 -->
+                <div id="home-page" class="sub-page active">
+                    <!-- <div class="home-title">请选择操作</div> -->
+                    <div class="nav-menu">
+                        <button class="nav-option" data-page="inbound-page">
+                            <div class="option-icon">📦</div>
+                            <div class="option-title">入库绑定</div>
+                        </button>
+                        <button class="nav-option" data-page="outbound-page">
+                            <div class="option-icon">🚚</div>
+                            <div class="option-title">备料出库</div>
+                        </button>
+                        <button class="nav-option" data-page="confirm-page">
+                            <div class="option-icon">✅</div>
+                            <div class="option-title">出库确认</div>
+                        </button>
+                    </div>
+                </div>
+                
                 <!-- 入库绑定页面 -->
-                <div id="inbound-page" class="sub-page active">
+                <div id="inbound-page" class="sub-page">
+                    <div class="page-header">
+                        <button class="back-btn" data-back="home-page">← 返回</button>
+                        <h3>入库绑定</h3>
+                    </div>
                     <form id="inbound-form">
-                          <div class="input-group">
+                        <div class="input-group input-group-inline">
                             <label for="inbound-pallet-id">托盘号:</label>
                             <input type="text" id="inbound-pallet-id" name="palletID" required 
-                                   placeholder="请扫描托盘二维码或手动输入">
-                        </div>
-                        <div class="input-group">
-                            <label for="inbound-inventory-id">库存号:</label>
-                            <input type="text" id="inbound-inventory-id" name="inventoryID" required 
-                                   placeholder="请扫描库存二维码或手动输入">
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" class="btn-primary">提交绑定</button>
-                            <button type="reset" class="btn-secondary">重置</button>
+                                   placeholder="请扫描或输入">
                         </div>
                     </form>
-                    <div id="inbound-result-area" class="result-area">
-                        <!-- 用于显示绑定结果 -->
+                    
+                    <!-- 托盘状态信息 -->
+                    <div id="pallet-status-area" class="status-area"></div>
+                    
+                    <!-- 库存列表表格 -->
+                    <div id="inventory-table-area" class="table-area">
+                        <div class="table-header">
+                            <h4>库存明细</h4>
+                            <button class="btn-add-row" id="btn-add-inventory">+ 新增行</button>
+                        </div>
+                        <div class="table-wrapper">
+                            <table id="inventory-table" class="inventory-table">
+                                <thead>
+                                    <tr>
+                                        <th>物料号</th>
+                                        <th>数量</th>
+                                        <th>型号规格</th>
+                                        <th>单位</th>
+                                        <th>单据号</th>
+                                        <th>描述</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inventory-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn-primary" id="btn-submit-inventory">提交绑定</button>
+                            <button type="button" class="btn-secondary" id="btn-reset-inventory">重置</button>
+                        </div>
                     </div>
                 </div>
 
                 <!-- 分拣出库页面 -->
                 <div id="outbound-page" class="sub-page">
+                    <div class="page-header">
+                        <button class="back-btn" data-back="home-page">← 返回</button>
+                        <h3>备料出库</h3>
+                    </div>
                     <form id="outbound-form">
-                        <div class="input-group">
-                            <label for="outbound-pallet-id">托盘号:</label>
-                            <input type="text" id="outbound-pallet-id" name="palletID" required 
-                                   placeholder="请扫描托盘二维码或手动输入">
-                        </div>
-                        <div class="input-group">
-                            <label for="outbound-item-qty">库存数量:</label>
-                            <input type="number" id="outbound-item-qty" name="itemQty" readonly 
-                                   placeholder="自动填充库存数量" value="">
-                        </div>
-                        <div class="input-group">
-                            <label for="item-qty">出库数量:</label>
-                            <input type="number" id="item-qty" name="itemQtyModify" required 
-                                   placeholder="请输入出库数量" value="" min="1">
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" class="btn-primary">提交出库</button>
-                            <button type="reset" class="btn-secondary">重置</button>
+                        <div class="input-group input-group-inline">
+                            <label for="outbound-item-id">物料号:</label>
+                            <input type="text" id="outbound-item-id" name="itemID" required 
+                                   placeholder="请扫描或输入">
                         </div>
                     </form>
-                    <div id="outbound-result-area" class="result-area">
-                       
-
+                    
+                    <!-- 状态提示区域 -->
+                    <div id="outbound-status-area" class="status-area"></div>
+                    
+                    <!-- 库存信息表格 -->
+                    <div id="outbound-table-area" class="table-area">
+                        <div class="table-header">
+                            <h4>库存信息</h4>
+                        </div>
+                        <div class="table-wrapper">
+                            <table id="outbound-table" class="inventory-table">
+                                <thead>
+                                    <tr>
+                                        <th>库位</th>
+                                        <th>托盘号</th>
+                                        <th>物料号</th>
+                                        <th>描述</th>
+                                        <th>型号</th>
+                                        <th>数量</th>
+                                        <th>单位</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="outbound-table-body">
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+                </div>
+
+                <!-- 出库确认页面 -->
+                <div id="confirm-page" class="sub-page">
+                    <div class="page-header">
+                        <button class="back-btn" data-back="home-page">← 返回</button>
+                        <h3>出库确认</h3>
+                    </div>
+                    <form id="confirm-form">
+                        <div class="input-group input-group-inline">
+                            <label for="confirm-pallet-id">托盘号:</label>
+                            <input type="text" id="confirm-pallet-id" name="palletID" required 
+                                   placeholder="请扫描或输入">
+                        </div>
+                    </form>
+                    
+                    <!-- 状态提示区域 -->
+                    <div id="confirm-status-area" class="status-area"></div>
+                    
+                    <!-- 库存列表表格 -->
+                    <div id="confirm-table-area" class="table-area">
+                        <div class="table-header">
+                            <h4>库存明细</h4>
+                        </div>
+                        <div class="table-wrapper">
+                            <table id="confirm-table" class="inventory-table">
+                                <thead>
+                                    <tr>
+                                        <th>库存编号</th>
+                                        <th>物料号</th>
+                                        <th>数量</th>
+                                        <th>出库数量</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="confirm-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn-primary" id="btn-confirm-outbound">确认出库</button>
+                            <button type="button" class="btn-secondary" id="btn-reset-confirm">重置</button>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    <!-- 自定义确认对话框 -->
+    <div id="confirm-dialog" class="confirm-dialog">
+        <div class="confirm-dialog-overlay"></div>
+        <div class="confirm-dialog-content">
+            <div class="confirm-dialog-header">
+                <h3>确认操作</h3>
+            </div>
+            <div class="confirm-dialog-body">
+                <p id="confirm-dialog-message">确认要执行此操作吗？</p>
+            </div>
+            <div class="confirm-dialog-footer">
+                <button class="btn-cancel" id="confirm-dialog-cancel">取消</button>
+                <button class="btn-confirm" id="confirm-dialog-ok">确认</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 页面加载时自动全屏显示
+        window.addEventListener('load', function() {
+            // 尝试进入全屏模式
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log('全屏请求被拒绝:', err);
+                });
+            }
+            
+            // 获取设备分辨率并提示3秒
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const message = `${width} × ${height}px`;
+            
+            // 创建提示信息DOM
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: rgba(0, 0, 0, 0.85);
+                color: #fff;
+                padding: 16px 24px;
+                border-radius: 10px;
+                font-size: 16px;
+                font-weight: 500;
+                z-index: 9999;
+                text-align: center;
+                animation: fadeInOut 3s ease-in-out;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                max-width: 80vw;
+                word-wrap: break-word;
+                line-height: 1.5;
+            `;
+            notification.innerHTML = `
+                <div style="font-size: 14px; color: #999; margin-bottom: 6px;">设备分辨率</div>
+                <div style="font-size: 18px; font-weight: bold;">${message}</div>
+            `;
+            
+            // 添加淡入淡出动画
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeInOut {
+                    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+                    10% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                    90% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(notification);
+            
+            // 3秒后移除提示信息
+            setTimeout(function() {
+                notification.remove();
+            }, 3000);
+            
+            console.log('设备分辨率:', message);
+        });
+    </script>
     <script src="config.js"></script>
     <script src="script.js"></script>
 </body>
