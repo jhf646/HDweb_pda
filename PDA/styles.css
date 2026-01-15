@@ -48,9 +48,7 @@ body {
 .page {
     display: none;
     flex: 1;
-    padding: 15px;
     overflow-y: auto;
-    padding-bottom: 20px;
 }
 
 .page.active {
@@ -58,22 +56,166 @@ body {
     flex-direction: column;
 }
 
-/* 登录页面样式 */
+#login-page.page.active {
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    justify-content: center;
+    align-items: center;
+}
+
+#main-page.page.active {
+    padding: 0;
+    overflow: hidden;
+}
+
 .login-container {
     width: 100%;
-    max-width: 400px;
+    max-width: 340px;
     margin: auto;
-    padding: 30px;
+    padding: 35px 30px 30px;
     background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    position: relative;
+}
+
+.login-logo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-logo img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    animation: fadeInDown 0.6s ease-out;
 }
 
 .login-container h2 {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 8px;
     color: #333;
-    font-size: 24px;
+    font-size: 22px;
+    font-weight: bold;
+    animation: fadeInDown 0.6s ease-out 0.1s both;
+}
+
+.login-subtitle {
+    text-align: center;
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 30px;
+    animation: fadeInDown 0.6s ease-out 0.2s both;
+}
+
+#login-form {
+    animation: fadeInUp 0.6s ease-out 0.3s both;
+}
+
+#login-form .input-group {
+    position: relative;
+    margin-bottom: 18px;
+}
+
+#login-form .input-group .input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    z-index: 1;
+    opacity: 0.6;
+}
+
+#login-form .input-group input {
+    width: 100%;
+    padding: 14px 15px 14px 48px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 15px;
+    transition: all 0.3s;
+    background: #f8f9fa;
+}
+
+#login-form .input-group input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+#login-form .input-group input::placeholder {
+    color: #aaa;
+}
+
+.btn-login {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    letter-spacing: 2px;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-login:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+}
+
+.login-footer {
+    margin-top: 25px;
+    text-align: center;
+    animation: fadeIn 0.6s ease-out 0.4s both;
+}
+
+.login-footer p {
+    color: #999;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+/* 动画定义 */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 /* 主页面样式 */
@@ -81,7 +223,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    margin: 15px 15px 0 15px;
     padding: 12px 15px;
     background: white;
     border-radius: 8px;
@@ -93,11 +235,10 @@ body {
     font-size: 18px;
     color: #333;
 }
-/* 首页样式 */
-#home-page {
-    justify-content: center;
+
+/* 首页特殊样式 */
+#home-page.sub-page.active {
     align-items: center;
-    padding: 20px 10px !important;
 }
 
 .home-title {
@@ -107,13 +248,6 @@ body {
     margin-bottom: 30px;
     text-align: center;
     width: 100%;
-}
-
-/* 操作内容页面（非首页） */
-#inbound-page,
-#outbound-page,
-#confirm-page {
-    padding: 15px !important;
 }
 
 /* 导航菜单 */
@@ -215,19 +349,22 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    padding: 0;
     position: relative;
+    min-height: 0;
 }
 
 /* 子页面样式 */
 .sub-page {
     display: none;
-    flex: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     flex-direction: column;
     padding: 15px;
     overflow-y: auto;
-    position: relative;
-    height: 100%;
+    overflow-x: hidden;
 }
 
 .sub-page.active {
@@ -246,6 +383,11 @@ body {
     font-weight: bold;
     color: #333;
     font-size: 14px;
+}
+
+/* 登录页面的 input-group 不显示 label */
+#login-page .input-group label {
+    display: none;
 }
 
 /* 水平布局的input-group */

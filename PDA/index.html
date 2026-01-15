@@ -13,24 +13,31 @@
     <div id="app">
         <div id="login-page" class="page active">
             <div class="login-container">
-                <h2>PDA操作系统</h2>
+                <div class="login-logo">
+                    <img src="logo.png" alt="系统Logo">
+                </div>
+                <h2>宏大立库 PDA 系统</h2>
+                <p class="login-subtitle">智能仓储管理平台</p>
                 <form id="login-form">
                     <div class="input-group">
-                        <label for="username">用户名:</label>
-                        <input type="text" id="username" name="username" required>
+                        <div class="input-icon">👤</div>
+                        <input type="text" id="username" name="username" placeholder="请输入用户名" required>
                     </div>
                     <div class="input-group">
-                        <label for="password">密码:</label>
-                        <input type="password" id="password" name="password" required>
+                        <div class="input-icon">🔒</div>
+                        <input type="password" id="password" name="password" placeholder="请输入密码" required>
                     </div>
-                    <button type="submit" class="btn-primary">登录</button>
+                    <button type="submit" class="btn-primary btn-login">登 录</button>
                 </form>
+                <div class="login-footer">
+                    <p>© 2026 宏大立库 | 仓储管理系统</p>
+                </div>
             </div>
         </div>
 
         <div id="main-page" class="page">
             <div class="header">
-                <h2>PDA操作系统</h2>
+                <h2>宏大立库 PDA 系统</h2>
                 <button id="logout-btn" class="btn-secondary">退出</button>
             </div>
             
