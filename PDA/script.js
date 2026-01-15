@@ -558,11 +558,11 @@ class PDASystem {
         
         // 验证所有行数据完整性
         const hasInvalidRows = inventoryData.some(item => 
-            !item.ItemID || !item.ItemName || item.ItemQty <= 0
+            !item.ItemID || item.ItemQty <= 0
         );
         
         if (hasInvalidRows) {
-            this.showMessage('请填写完整的库存信息（物料号、描述、数量为必填项）', 'error');
+            this.showMessage('请填写完整的库存信息（物料号、数量为必填项）', 'error');
             return;
         }
         
