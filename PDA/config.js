@@ -3,7 +3,7 @@ const API_CONFIG = {
     // 基础服务地址
     BASE_URL_LOCAL: 'http://192.168.50.40:20000',
     // BASE_URL_REMOTE: 'http://117.50.117.118:20001',
-     BASE_URL_REMOTE: 'http://192.168.1.14:20008',
+     BASE_URL_REMOTE: 'http://192.168.111.74:20008',
     
     // 用户相关接口
     CHECK_USER_INFO: '/CheckUserInfo',
