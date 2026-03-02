@@ -503,6 +503,7 @@ class PDASystem {
         const itemQty = Number(item.ItemQty || 0);
         const itemUnit = String(item.ItemUnit || '').trim();
         const orderCode = String(item.OrderCode || '').trim();
+        const vendor = String(item.Vendor || '').trim();
         
         row.innerHTML = `
             <td><input type="text" class="item-id" value="${itemID}" placeholder="物料号"></td>
@@ -510,6 +511,7 @@ class PDASystem {
             <td><input type="text" class="item-model" value="${itemModel}" placeholder="型号规格"></td>
             <td><input type="text" class="item-unit" value="${itemUnit}" placeholder="单位"></td>
             <td><input type="text" class="order-code" value="${orderCode}" placeholder="单据号"></td>
+            <td><input type="text" class="vendor" value="${vendor}" placeholder="供应商"></td>
             <td><input type="text" class="item-name" value="${itemName}" placeholder="描述"></td>
             <td><button type="button" class="btn-delete-row">删除</button></td>
         `;
@@ -521,7 +523,7 @@ class PDASystem {
             });
         });
 
-        console.log(`创建表格行 ${index}:`, {itemID, itemName, itemModel, itemQty, itemUnit, orderCode});
+        console.log(`创建表格行 ${index}:`, {itemID, itemName, itemModel, itemQty, itemUnit, orderCode, vendor});
         return row;
     }
 
@@ -566,6 +568,7 @@ class PDASystem {
                         row.querySelector('.item-model').value = last.ItemModel || '';
                         row.querySelector('.item-unit').value = last.ItemUnit || '';
                         row.querySelector('.order-code').value = last.OrderCode || '';
+                        row.querySelector('.vendor').value = last.Vendor || '';
                         row.querySelector('.item-name').value = last.ItemName || '';
                         row.dataset.prefilled = 'true';
                     }
@@ -591,7 +594,8 @@ class PDASystem {
                 ItemModel: row.querySelector('.item-model').value,
                 ItemQty: parseFloat(row.querySelector('.item-qty').value) || 0,
                 ItemUnit: row.querySelector('.item-unit').value,
-                OrderCode: row.querySelector('.order-code').value
+                OrderCode: row.querySelector('.order-code').value,
+                Vendor: row.querySelector('.vendor').value
             });
         });
         
@@ -643,7 +647,8 @@ class PDASystem {
                     ItemModel: item.ItemModel,
                     ItemQty: parseFloat(item.ItemQty),
                     ItemUnit: item.ItemUnit,
-                    OrderCode: item.OrderCode || null
+                    OrderCode: item.OrderCode || null,
+                    Vendor: item.Vendor || null
                 }))
             };
             
