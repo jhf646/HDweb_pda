@@ -506,8 +506,35 @@ class PDASystem {
             <td><button type="button" class="btn-delete-row">删除</button></td>
         `;
         
+        // 所有输入聚焦时自动选中文本
+        row.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', (e) => {
+                e.target.select();
+            });
+        });
+
         console.log(`创建表格行 ${index}:`, {itemID, itemName, itemModel, itemQty, itemUnit, orderCode});
         return row;
+    }
+
+    // 读取上次提交时保存的行信息
+    getLastInventoryRow() {
+        try {
+            const data = localStorage.getItem('lastInventoryRow');
+            return data ? JSON.parse(data) : null;
+        } catch (e) {
+            console.warn('解析上次行信息失败', e);
+            return null;
+        }
+    }
+
+    // 保存行信息到本地以便下次自动填充
+    saveLastInventoryRow(rowObj) {
+        try {
+            localStorage.setItem('lastInventoryRow', JSON.stringify(rowObj));
+        } catch (e) {
+            console.warn('保存上次行信息失败', e);
+        }
     }
 
     // 添加新的库存行
@@ -515,7 +542,29 @@ class PDASystem {
         const tbody = document.getElementById('inventory-table-body');
         const row = this.createInventoryRow({}, tbody.children.length);
         tbody.appendChild(row);
-        
+
+        // 标记为尚未填充
+        row.dataset.prefilled = 'false';
+
+        // 输入框聚焦时自动选择并在第一次聚焦时尝试填充默认数据
+        row.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', (e) => {
+                e.target.select();
+                if (row.dataset.prefilled === 'false') {
+                    const last = this.getLastInventoryRow();
+                    if (last) {
+                        row.querySelector('.item-id').value = last.ItemID || '';
+                        row.querySelector('.item-qty').value = last.ItemQty || '';
+                        row.querySelector('.item-model').value = last.ItemModel || '';
+                        row.querySelector('.item-unit').value = last.ItemUnit || '';
+                        row.querySelector('.order-code').value = last.OrderCode || '';
+                        row.querySelector('.item-name').value = last.ItemName || '';
+                        row.dataset.prefilled = 'true';
+                    }
+                }
+            });
+        });
+
         // 绑定删除按钮事件
         row.querySelector('.btn-delete-row').addEventListener('click', (e) => {
             e.target.closest('tr').remove();
@@ -610,6 +659,11 @@ class PDASystem {
             
             if (result.code === '200') {
                 this.showMessage(result.msg || '库存绑定成功', 'success');
+                // 保存最后提交的行信息，便于下次自动填充
+                if (inventoryData && inventoryData.length > 0) {
+                    // 存储最后一行，如果需要可改为存整个数组
+                    this.saveLastInventoryRow(inventoryData[inventoryData.length - 1]);
+                }
                 // 延迟后重置表单
                 setTimeout(() => {
                     this.resetInventoryForm();
