@@ -58,6 +58,10 @@
                             <div class="option-icon">✅</div>
                             <div class="option-title">出库确认</div>
                         </button>
+                        <button class="nav-option" data-page="empty-page">
+                            <div class="option-icon">📭</div>
+                            <div class="option-title">空托出库</div>
+                        </button>
                     </div>
                 </div>
                 
@@ -125,6 +129,7 @@
                     <!-- 状态提示区域 -->
                     <div id="outbound-status-area" class="status-area"></div>
                     
+                    
                     <!-- 库存信息表格 -->
                     <div id="outbound-table-area" class="table-area">
                         <div class="table-header">
@@ -149,6 +154,18 @@
                             </table>
                         </div>
                     </div>
+                </div>
+
+                <!-- 空托出库页面 -->
+                <div id="empty-page" class="sub-page">
+                    <div class="page-header">
+                        <button class="back-btn" data-back="home-page">← 返回</button>
+                        <h3>空托出库</h3>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-primary" id="btn-empty-pallet">执行空托出库</button>
+                    </div>
+                    <div id="empty-status-area" class="status-area"></div>
                 </div>
 
                 <!-- 出库确认页面 -->

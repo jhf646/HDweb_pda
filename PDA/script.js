@@ -199,6 +199,7 @@ class PDASystem {
         const confirmPalletInput = document.getElementById('confirm-pallet-id');
         const btnConfirmOutbound = document.getElementById('btn-confirm-outbound');
         const btnResetConfirm = document.getElementById('btn-reset-confirm');
+        const btnEmptyPallet = document.getElementById('btn-empty-pallet');
         
         if (confirmPalletInput) {
             confirmPalletInput.addEventListener('input', (e) => {
@@ -223,6 +224,13 @@ class PDASystem {
         if (btnResetConfirm) {
             btnResetConfirm.addEventListener('click', () => {
                 this.resetConfirmForm();
+            });
+        }
+        
+        // 空托出库按钮处理
+        if (btnEmptyPallet) {
+            btnEmptyPallet.addEventListener('click', () => {
+                this.handleEmptyPallet();
             });
         }
     }
@@ -804,6 +812,21 @@ class PDASystem {
         }
     }
 
+    // 显示空托出库消息
+    showEmptyMessage(message, type) {
+        const statusArea = document.getElementById('empty-status-area');
+        if (!statusArea) return;
+        
+        statusArea.textContent = message;
+        statusArea.className = 'status-area show ' + type;
+        
+        if (type === 'success' || type === 'error') {
+            setTimeout(() => {
+                statusArea.classList.remove('show');
+            }, 3000);
+        }
+    }
+
     // 处理备料出库
     async handlePalletPrepare(palletID) {
         if (!palletID) {
@@ -852,6 +875,45 @@ class PDASystem {
         } catch (error) {
             console.error('备料出库失败:', error);
             this.showOutboundMessage('出库失败: ' + error.message, 'error');
+        }
+    }
+
+    // ===== 新增空托出库功能 =====
+    /**
+     * 处理空托出库按钮点击事件，带确认
+     */
+    async handleEmptyPallet() {
+        const confirmed = await this.showConfirm('确认执行空托出库吗？');
+        if (!confirmed) {
+            return;
+        }
+        await this.submitEmptyPalletOutbound();
+    }
+
+    /**
+     * 调用接口进行空托出库
+     */
+    async submitEmptyPalletOutbound() {
+        this.showEmptyMessage('正在提交空托出库...', 'loading');
+        try {
+            const response = await fetch(getApiUrl(API_CONFIG.OUTBOUND_EMPTY_PALLET, false), {
+                method: 'POST'
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP错误: ${response.status}`);
+            }
+            const data = await response.json();
+            if (data.code === '200') {
+                this.showEmptyMessage(data.msg || '空托出库成功', 'success');
+                // 重置输入并隐藏结果
+                document.getElementById('outbound-item-id').value = '';
+                this.hideOutboundTable();
+            } else {
+                throw new Error(data.msg || '空托出库失败');
+            }
+        } catch (error) {
+            console.error('空托出库失败:', error);
+            this.showEmptyMessage('空托出库失败: ' + error.message, 'error');
         }
     }
 
@@ -1438,6 +1500,12 @@ class PDASystem {
         const content = document.querySelector('.content');
         if (content) {
             content.scrollTop = 0;
+        }
+
+        // 额外处理各子页初始化
+        if (subPageId === 'empty-page') {
+            const status = document.getElementById('empty-status-area');
+            if (status) status.textContent = '';
         }
     }
 }

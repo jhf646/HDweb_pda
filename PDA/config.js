@@ -19,7 +19,9 @@ const API_CONFIG = {
     SUBMIT_PALLET_ITEM_QTY_MODIFY: '/SubmitPalletItemQtyModify',
     GET_LOCATION_INFO_WITH_PALLET: '/GetLocationInfoWithPalletLineListInfo',
     SUBMIT_PALLET_PREPARE: '/SubmitPalletPrepare',
-    CONFIRM_OUTBOUND: '/ConfirmOutbound'
+    CONFIRM_OUTBOUND: '/ConfirmOutbound',
+    // 新增空托出库接口（POST，无参数）
+    OUTBOUND_EMPTY_PALLET: '/OutboundEmptyPallet'
 };
 
 // 便捷方法 - 获取完整的API URL
