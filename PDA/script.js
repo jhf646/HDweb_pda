@@ -220,6 +220,11 @@ class PDASystem {
                 this.submitConfirmOutbound();
             });
         }
+        // 批量出库按钮事件
+        const btnBulk = document.getElementById('btn-bulk-outbound');
+        if (btnBulk) {
+            btnBulk.addEventListener('click', () => this.handleBulkOutbound());
+        }
         
         if (btnResetConfirm) {
             btnResetConfirm.addEventListener('click', () => {
@@ -740,6 +745,7 @@ class PDASystem {
     loadOutboundTable(dataList) {
         const tbody = document.getElementById('outbound-table-body');
         const tableArea = document.getElementById('outbound-table-area');
+        const selectAll = document.getElementById('select-all');
         
         if (!tbody || !tableArea) {
             console.error('未找到出库表格元素');
@@ -750,22 +756,35 @@ class PDASystem {
         
         dataList.forEach((item, index) => {
             const row = this.createOutboundRow(item, index);
+            row.dataset.palletId = item.PalletID || '';
             tbody.appendChild(row);
-            
-            // 绑定出库按钮事件
-            const btn = row.querySelector('.btn-outbound');
-            if (btn) {
-                btn.addEventListener('click', () => {
-                    this.handlePalletPrepare(item.PalletID);
+        });
+        
+        // 全选逻辑
+        if (selectAll) {
+            selectAll.checked = false;
+            selectAll.addEventListener('change', () => {
+                const checked = selectAll.checked;
+                tbody.querySelectorAll('.select-checkbox').forEach(cb => {
+                    cb.checked = checked;
                 });
-            }
+            });
+        }
+        // 监听单行选择，更新全选状态
+        tbody.querySelectorAll('.select-checkbox').forEach(cb => {
+            cb.addEventListener('change', () => {
+                if (selectAll) {
+                    const all = Array.from(tbody.querySelectorAll('.select-checkbox')).every(el => el.checked);
+                    selectAll.checked = all;
+                }
+            });
         });
         
         tableArea.classList.add('show');
         this.attachSortHandlers('outbound-table');
     }
 
-    // 创建备料出库表格行
+    // 创建备料出库表格行（带复选框）
     createOutboundRow(item, index) {
         const row = document.createElement('tr');
         
@@ -779,6 +798,7 @@ class PDASystem {
         const itemUnit = String(item.ItemUnit || '').trim();
         
         row.innerHTML = `
+            <td><input type="checkbox" class="select-checkbox"></td>
             <td>${locationName}</td>
             <td>${palletID}</td>
             <td>${vendor}</td>
@@ -787,7 +807,6 @@ class PDASystem {
             <td>${itemModel}</td>
             <td>${itemQty}</td>
             <td>${itemUnit}</td>
-            <td><button type="button" class="btn-outbound btn-primary">出库</button></td>
         `;
         
         return row;
@@ -841,8 +860,8 @@ class PDASystem {
         if (!table) return;
         const headers = table.querySelectorAll('th');
         headers.forEach((th, idx) => {
-            // skip last column (操作)
-            if (idx === headers.length - 1) return;
+            // skip first column (checkbox)
+            if (idx === 0) return;
             th.classList.add('sortable');
             th.addEventListener('click', () => {
                 this.sortTableByColumn(table, idx);
@@ -870,55 +889,53 @@ class PDASystem {
             if (idx !== columnIndex) delete h.dataset.order;
         });
         header.dataset.order = asc ? 'asc' : 'desc';
+        // keep select-all checkbox updated
+        const selectAll = document.getElementById('select-all');
+        if (selectAll) {
+            const boxes = Array.from(table.querySelectorAll('.select-checkbox'));
+            selectAll.checked = boxes.length > 0 && boxes.every(cb => cb.checked);
+        }
     }
 
-    // 处理备料出库
-    async handlePalletPrepare(palletID) {
-        if (!palletID) {
-            this.showOutboundMessage('托盘号无效', 'error');
+    // 批量备料出库
+    async handleBulkOutbound() {
+        const tbody = document.getElementById('outbound-table-body');
+        const checkedBoxes = Array.from(tbody.querySelectorAll('.select-checkbox:checked'));
+        if (checkedBoxes.length === 0) {
+            this.showOutboundMessage('请先选择要出库的托盘', 'error');
             return;
         }
-        
-        const confirmed = await this.showConfirm(`确认要将托盘 ${palletID} 备料出库吗？`);
-        if (!confirmed) {
+        const palList = checkedBoxes.map(cb => cb.closest('tr').dataset.palletId).filter(id => id);
+        if (palList.length === 0) {
+            this.showOutboundMessage('没有有效的托盘号', 'error');
             return;
         }
-        
+        const confirmed = await this.showConfirm(`确认要将 ${palList.length} 个托盘备料出库吗？`);
+        if (!confirmed) return;
+
         this.showOutboundMessage('正在提交备料出库...', 'loading');
-        
         try {
             const response = await fetch(getApiUrl(API_CONFIG.SUBMIT_PALLET_PREPARE, false), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    PalletID: palletID
-                })
+                body: JSON.stringify(palList.map(id => ({ PalletID: id })))
             });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP错误: ${response.status}`);
-            }
-            
+            if (!response.ok) throw new Error(`HTTP错误: ${response.status}`);
             const result = await response.json();
-            console.log('备料出库返回:', result);
-            
+            console.log('批量备料出库返回:', result);
             if (result.code === '200') {
                 this.showOutboundMessage(result.msg || '备料出库成功', 'success');
-                // 重新查询物料信息
                 const itemID = document.getElementById('outbound-item-id').value.trim();
                 if (itemID) {
-                    setTimeout(() => {
-                        this.queryLocationByItemID(itemID);
-                    }, 1500);
+                    setTimeout(() => this.queryLocationByItemID(itemID), 1500);
                 }
             } else {
                 throw new Error(result.msg || '备料出库失败');
             }
-            
         } catch (error) {
-            console.error('备料出库失败:', error);
+            console.error('批量备料出库失败:', error);
             this.showOutboundMessage('出库失败: ' + error.message, 'error');
         }
     }

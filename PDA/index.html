@@ -135,11 +135,13 @@
                     <div id="outbound-table-area" class="table-area">
                         <div class="table-header">
                             <h4>库存信息</h4>
+                            <button type="button" class="btn-primary" id="btn-bulk-outbound">出库所选</button>
                         </div>
                         <div class="table-wrapper">
                             <table id="outbound-table" class="inventory-table">
                                 <thead>
                                     <tr>
+                                        <th><input type="checkbox" id="select-all"></th>
                                         <th>库位</th>
                                         <th>托盘号</th>
                                         <th>供应商</th>
@@ -148,7 +150,6 @@
                                         <th>型号</th>
                                         <th>数量</th>
                                         <th>单位</th>
-                                        <th>操作</th>
                                     </tr>
                                 </thead>
                                 <tbody id="outbound-table-body">
