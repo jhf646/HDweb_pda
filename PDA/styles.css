@@ -647,6 +647,13 @@ body {
     
     .inventory-table {
         font-size: 13px;
+        width: 100%;
+        table-layout: fixed;
+    }
+    .inventory-table th, .inventory-table td {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     
     .inventory-table td {
@@ -791,8 +798,9 @@ input, textarea {
 .inventory-table thead th:nth-child(3) { width: 130px; min-width: 130px; } /* 型号规格 */
 .inventory-table thead th:nth-child(4) { width: 80px; min-width: 80px; } /* 单位 */
 .inventory-table thead th:nth-child(5) { width: 130px; min-width: 130px; } /* 单据号 */
-.inventory-table thead th:nth-child(6) { width: 150px; min-width: 150px; } /* 描述 */
-.inventory-table thead th:nth-child(7) { 
+.inventory-table thead th:nth-child(6) { width: 120px; min-width: 120px; } /* 供应商 */
+.inventory-table thead th:nth-child(7) { width: 150px; min-width: 150px; } /* 描述 */
+.inventory-table thead th:nth-child(8) { 
     width: 70px; 
     min-width: 70px; 
     text-align: center;
@@ -825,8 +833,9 @@ input, textarea {
 .inventory-table td:nth-child(3) { width: 130px; min-width: 130px; }
 .inventory-table td:nth-child(4) { width: 80px; min-width: 80px; }
 .inventory-table td:nth-child(5) { width: 130px; min-width: 130px; }
-.inventory-table td:nth-child(6) { width: 150px; min-width: 150px; }
-.inventory-table td:nth-child(7) { 
+.inventory-table td:nth-child(6) { width: 120px; min-width: 120px; }
+.inventory-table td:nth-child(7) { width: 150px; min-width: 150px; }
+.inventory-table td:nth-child(8) { 
     width: 70px; 
     min-width: 70px; 
     text-align: center;
@@ -837,15 +846,16 @@ input, textarea {
     box-shadow: -2px 0 4px rgba(0,0,0,0.05);
 }
 
-.inventory-table tbody tr:hover td:nth-child(7) {
+.inventory-table tbody tr:hover td {
     background-color: #f5f5f5;
 }
 
 /* 备料出库表格特殊列宽设置 */
 #outbound-table thead th:nth-child(1) { width: 120px; min-width: 120px; } /* 库位 */
 #outbound-table thead th:nth-child(2) { width: 100px; min-width: 100px; } /* 托盘号 */
-#outbound-table thead th:nth-child(3) { width: 120px; min-width: 120px; } /* 物料号 */
-#outbound-table thead th:nth-child(4) { width: 150px; min-width: 150px; } /* 描述 */
+#outbound-table thead th:nth-child(3) { width: 120px; min-width: 120px; } /* 供应商 */
+#outbound-table thead th:nth-child(4) { width: 120px; min-width: 120px; } /* 物料号 */
+#outbound-table thead th:nth-child(5) { width: 150px; min-width: 150px; } /* 描述 */
 #outbound-table thead th:nth-child(5) { width: 130px; min-width: 130px; } /* 型号 */
 #outbound-table thead th:nth-child(6) { width: 100px; min-width: 100px; text-align: center; } /* 数量 */
 #outbound-table thead th:nth-child(7) { width: 80px; min-width: 80px; text-align: center; } /* 单位 */
@@ -863,19 +873,12 @@ input, textarea {
 #outbound-table td:nth-child(1) { width: 120px; min-width: 120px; }
 #outbound-table td:nth-child(2) { width: 100px; min-width: 100px; }
 #outbound-table td:nth-child(3) { width: 120px; min-width: 120px; }
-#outbound-table td:nth-child(4) { width: 150px; min-width: 150px; }
-#outbound-table td:nth-child(5) { width: 130px; min-width: 130px; }
-#outbound-table td:nth-child(6) { width: 100px; min-width: 100px; text-align: center; }
-#outbound-table td:nth-child(7) { 
-    width: 80px; 
-    min-width: 80px; 
-    text-align: center;
-    background-color: transparent;
-    position: static;
-    box-shadow: none;
-}
-#outbound-table td:nth-child(8) { 
-    width: 70px; 
+#outbound-table td:nth-child(4) { width: 120px; min-width: 120px; }
+#outbound-table td:nth-child(5) { width: 150px; min-width: 150px; }
+#outbound-table td:nth-child(6) { width: 130px; min-width: 130px; }
+#outbound-table td:nth-child(7) { width: 100px; min-width: 100px; text-align: center; }
+#outbound-table td:nth-child(8) { width: 80px; min-width: 80px; text-align: center; background-color: transparent; position: static; box-shadow: none; }
+#outbound-table td:nth-child(9) { width: 70px; 
     min-width: 70px; 
     text-align: center;
     position: sticky;
@@ -885,11 +888,7 @@ input, textarea {
     box-shadow: -2px 0 4px rgba(0,0,0,0.05);
 }
 
-#outbound-table tbody tr:hover td:nth-child(7) {
-    background-color: #f5f5f5;
-}
-
-#outbound-table tbody tr:hover td:nth-child(8) {
+#outbound-table tbody tr:hover td {
     background-color: #f5f5f5;
 }
 
@@ -942,7 +941,7 @@ input, textarea {
 
 /* 出库按钮 */
 .btn-outbound {
-    padding: 5px 10px;
+    padding: 3px 8px;
     background: #28a745;
     color: white;
     border: none;
@@ -952,7 +951,8 @@ input, textarea {
     cursor: pointer;
     transition: background 0.3s;
     white-space: nowrap;
-    width: 100%;
+    width: auto;
+    min-width: 60px;
     height: 30px;
     display: flex;
     align-items: center;
@@ -965,6 +965,31 @@ input, textarea {
 
 .btn-outbound:active {
     transform: scale(0.95);
+}
+
+/* 排序箭头样式 */
+.inventory-table th.sortable {
+    position: relative;
+    padding-right: 20px;
+    box-sizing: border-box;
+}
+.inventory-table th.sortable::after {
+    content: '';
+    position: absolute;
+    right: 8px;
+    font-size: 10px;
+    opacity: 0.4;
+}
+/* 在未排序时显示上下箭头提示 */
+.inventory-table th.sortable:not([data-order])::after {
+    content: "⇅";
+    opacity: 0.2;
+}
+.inventory-table th[data-order="asc"]::after {
+    content: "▲";
+}
+.inventory-table th[data-order="desc"]::after {
+    content: "▼";
 }
 
 /* 高对比度模式，适合工业环境 */

@@ -762,6 +762,7 @@ class PDASystem {
         });
         
         tableArea.classList.add('show');
+        this.attachSortHandlers('outbound-table');
     }
 
     // 创建备料出库表格行
@@ -770,6 +771,7 @@ class PDASystem {
         
         const locationName = String(item.LocationName || item.LocationID || '').trim();
         const palletID = String(item.PalletID || '').trim();
+        const vendor = String(item.Vendor || '').trim();
         const itemID = String(item.ItemID || '').trim();
         const itemName = String(item.ItemName || '').trim();
         const itemModel = String(item.ItemModel || '').trim();
@@ -779,6 +781,7 @@ class PDASystem {
         row.innerHTML = `
             <td>${locationName}</td>
             <td>${palletID}</td>
+            <td>${vendor}</td>
             <td>${itemID}</td>
             <td>${itemName}</td>
             <td>${itemModel}</td>
@@ -830,6 +833,43 @@ class PDASystem {
                 statusArea.classList.remove('show');
             }, 3000);
         }
+    }
+
+    // 辅助：为表格添加列排序功能
+    attachSortHandlers(tableId) {
+        const table = document.getElementById(tableId);
+        if (!table) return;
+        const headers = table.querySelectorAll('th');
+        headers.forEach((th, idx) => {
+            // skip last column (操作)
+            if (idx === headers.length - 1) return;
+            th.classList.add('sortable');
+            th.addEventListener('click', () => {
+                this.sortTableByColumn(table, idx);
+            });
+        });
+    }
+
+    sortTableByColumn(table, columnIndex) {
+        const tbody = table.tBodies[0];
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        if (rows.length === 0) return;
+        const headers = table.querySelectorAll('th');
+        const header = headers[columnIndex];
+        const asc = header.dataset.order !== 'asc';
+        rows.sort((a, b) => {
+            const aText = a.cells[columnIndex].textContent.trim();
+            const bText = b.cells[columnIndex].textContent.trim();
+            return asc
+                ? aText.localeCompare(bText, undefined, { numeric: true })
+                : bText.localeCompare(aText, undefined, { numeric: true });
+        });
+        rows.forEach(r => tbody.appendChild(r));
+        // clear other headers
+        headers.forEach((h, idx) => {
+            if (idx !== columnIndex) delete h.dataset.order;
+        });
+        header.dataset.order = asc ? 'asc' : 'desc';
     }
 
     // 处理备料出库
@@ -1354,7 +1394,7 @@ class PDASystem {
             const qtyModifyInput = row.querySelector('input[type="number"]');
             const qtyModify = parseFloat(qtyModifyInput.value);
             
-            if (isNaN(qtyModify) || qtyModify <= 0) {
+            if (isNaN(qtyModify) || qtyModify < 0) {
                 hasError = true;
                 qtyModifyInput.style.borderColor = 'red';
             } else {
